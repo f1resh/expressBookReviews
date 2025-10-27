@@ -62,9 +62,21 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
     username = req.session.authorization['username'];
     book["reviews"][username] = review;
-    res.status(200).send(`Review for the book with ISBN=${isbn} has been updated`);
+    return res.status(200).send(`Review for the book with ISBN=${isbn} has been updated`);
 
 });
+
+// Delete book review
+regd_users.delete("/auth/review/:isbn", (req,res) =>{
+    const isbn = req.params.isbn;
+    book = books[isbn];
+    if (!book){
+        return res.status(400).send("Book with this ISBN doesn't exist!")
+    }
+    username = req.session.authorization['username'];
+    delete book["reviews"][username];
+    return res.status(200).send(`Review for the book with with ISBN=${isbn} has been deleted`);
+})
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
