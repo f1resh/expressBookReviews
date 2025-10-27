@@ -40,7 +40,7 @@ regd_users.post("/login", (req,res) => {
     req.session.authorization = {
         accessToken, username
     }
-    return res.status(200).send("User successfully logged in");
+    return res.status(200).send({message: "User successfully logged in"});
   } else {
     return res.status(208).json({message: "Invalid Login. Check username and password"});
   }
@@ -52,17 +52,17 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     book = books[isbn];
     if (!book){
-        return res.status(400).send("Book with this ISBN doesn't exist!")
+        return res.status(400).send({message: "Book with this ISBN doesn't exist!"})
     }
 
     const review = req.body.review;
     if (!review) {
-        return res.status(400).send("Missing review in request")
+        return res.status(400).send({message: "Missing review in request"})
     }
 
     username = req.session.authorization['username'];
     book["reviews"][username] = review;
-    return res.status(200).send(`Review for the book with ISBN=${isbn} has been updated`);
+    return res.status(200).send({message: `Review for the book with ISBN ${isbn} has been updated`});
 
 });
 
@@ -71,11 +71,11 @@ regd_users.delete("/auth/review/:isbn", (req,res) =>{
     const isbn = req.params.isbn;
     book = books[isbn];
     if (!book){
-        return res.status(400).send("Book with this ISBN doesn't exist!")
+        return res.status(400).send({message: "Book with this ISBN doesn't exist!"})
     }
     username = req.session.authorization['username'];
     delete book["reviews"][username];
-    return res.status(200).send(`Review for the book with with ISBN=${isbn} has been deleted`);
+    return res.status(200).send({message: `Review for the book with with ISBN ${isbn} has been deleted`});
 })
 
 module.exports.authenticated = regd_users;
